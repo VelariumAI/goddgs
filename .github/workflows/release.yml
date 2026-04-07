@@ -1,0 +1,27 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24.x'
+      - run: go test ./...
+      - run: |
+          mkdir -p dist
+          GOOS=linux GOARCH=amd64 go build -o dist/goddgs-linux-amd64 ./cmd/goddgs
+          GOOS=linux GOARCH=amd64 go build -o dist/goddgsd-linux-amd64 ./cmd/goddgsd
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/goddgs-linux-amd64
+            dist/goddgsd-linux-amd64
