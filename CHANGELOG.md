@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## v0.1.1 - 2026-04-07
+
+- Aligned release/tag state with reconciled remote `main`.
+- Revamped documentation for consistency with implemented solver and anti-bot capabilities.
+- Added comprehensive docs index and architecture/configuration/anti-bot guides.
+
 ## v0.1.0 - 2026-04-07
 
 - Added DDG-first resilient search client with typed block detection.

@@ -1,30 +1,44 @@
 # Release Checklist
 
-## Pre-release
+## Pre-Release
 
-- Update `CHANGELOG.md` for the new version.
-- Confirm `README.md` examples run against current API.
-- Run local quality checks:
-  - `make fmt`
-  - `make vet`
-  - `make test`
-  - `make coverage`
-  - `make build`
-- Verify CI is green on `main`.
-- Ensure no secrets/tokens in repo history for this release.
+- Update `CHANGELOG.md`.
+- Ensure docs reflect current runtime behavior and flags.
+- Run local quality gates:
+
+```bash
+make fmt
+make vet
+make test
+make coverage
+make build
+```
+
+- Confirm CI is green on `main`.
+- Confirm no secret material in git history or release artifacts.
 
 ## Versioning
 
-- Use semver tags (`vX.Y.Z`).
+- Use semantic versions (`vX.Y.Z`).
 - Create annotated tag:
-  - `git tag -a vX.Y.Z -m "vX.Y.Z"`
-- Push tag:
-  - `git push origin vX.Y.Z`
 
-## Post-release
+```bash
+git tag -a vX.Y.Z -m "vX.Y.Z"
+git push origin vX.Y.Z
+```
 
-- Verify GitHub release workflow completed.
-- Validate module install:
-  - `go get github.com/velariumai/goddgs@vX.Y.Z`
-- Run smoke test with fresh module cache.
-- Announce release notes.
+## Release Notes
+
+- Create release notes under `docs/releases/`.
+- Include highlights, reliability notes, and compatibility constraints.
+
+## Post-Release
+
+- Verify workflow completion for CI and release.
+- Validate install:
+
+```bash
+go get github.com/velariumai/goddgs@vX.Y.Z
+```
+
+- Perform smoke test from a clean module cache.

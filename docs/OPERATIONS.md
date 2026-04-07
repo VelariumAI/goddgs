@@ -1,5 +1,13 @@
 # Operations Guide
 
+## SLO-Oriented View
+
+Primary production objectives:
+
+- low request failure rate,
+- bounded p95 latency,
+- stable fallback behavior under provider disruptions.
+
 ## Key Runtime Controls
 
 - `CircuitBreakerThreshold` (default: `5`)
@@ -7,9 +15,7 @@
 - `VQDInvalidateOnBlock` (recommended: `true`)
 - `SessionInvalidateOnBlock` (recommended: `true`)
 
-## Observability
-
-Prometheus metrics:
+## Metrics
 
 - `goddgs_requests_total{provider,status}`
 - `goddgs_request_duration_seconds{provider}`
@@ -19,21 +25,28 @@ Prometheus metrics:
 - `goddgs_circuit_events_total{provider,state,trigger}`
 - `goddgs_circuit_open{provider}`
 
-## Runbook
+## Alerting Suggestions
+
+- Circuit open sustained for DDG provider over N minutes.
+- Fallback transitions exceed baseline by threshold multiplier.
+- Provider error rate above budget.
+
+## Incident Runbook
 
 ### High block rate
 
-- Check `goddgs_block_events_total` by `signal`.
-- If cloud/challenge signals spike, increase fallback priority to keyed providers.
-- Confirm circuit breaker is tripping (look at `threshold_reached`).
+- Validate block signal mix via `goddgs_block_events_total`.
+- Confirm breaker transitions (`threshold_reached`, `fail_fast`).
+- Increase fallback preference toward keyed providers.
 
 ### Persistent fail-fast
 
-- Check `goddgs_circuit_open{provider="ddg"}`.
-- Increase cooldown if immediate retries always fail.
-- Rotate network/proxy session if available.
+- Inspect `goddgs_circuit_open{provider="ddg"}`.
+- Increase cooldown if immediate retries remain ineffective.
+- Rotate session/proxy resources if available.
 
-### Provider fallback pressure
+### Elevated latency
 
-- Inspect `goddgs_fallback_transitions_total` trend.
-- If DDG is unstable for your traffic profile, prefer official providers first.
+- Check retries/timeouts and provider ordering.
+- Reduce retry count if timeout amplification is observed.
+- Prioritize lower-latency provider in chain where acceptable.
